@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
 		String userId = request.getParameter("userId");
 		String userPwd = request.getParameter("userPwd"); //form에서 넘겨주는 name으로 적는 것.
 		
-		String originPwd = request.getParameter("userPwd");
+		String originPwd = (String)request.getParameter("originPwd");
 		
 		Member loginUser = new MemberService().loginMember(userId,userPwd);
 		

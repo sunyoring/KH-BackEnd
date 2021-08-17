@@ -9,17 +9,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.kh.member.model.service.MemberService;
+import com.kh.member.model.vo.Member;
+
 /**
- * Servlet implementation class MemberEnrollFormServlet
+ * Servlet implementation class MemberPageServlet
  */
-@WebServlet("/enrollForm.me")
-public class MemberEnrollFormServlet extends HttpServlet {
+@WebServlet("/mypage.me")
+public class MemberPageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public MemberEnrollFormServlet() {
+    public MemberPageServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -28,7 +31,23 @@ public class MemberEnrollFormServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher view = request.getRequestDispatcher("views/member/memberEnrollForm.jsp");
+		Member loginUser = (Member)request.getSession().getAttribute("loginUser");
+		
+		String userId = loginUser.getUserId();
+
+		Member member = new MemberService().selectMember(userId);
+		System.out.println("member : " + member);
+		
+		RequestDispatcher view = null;
+		if(member != null) {
+			request.setAttribute("loginUser", member);
+			view = request.getRequestDispatcher("views/member/myPage.jsp");
+		}else {
+			request.setAttribute("msg", "로그인에 실패했습니다.");
+			
+			request.getRequestDispatcher("views/common/errorPage.jsp");
+		}
+		
 		view.forward(request, response);
 	}
 

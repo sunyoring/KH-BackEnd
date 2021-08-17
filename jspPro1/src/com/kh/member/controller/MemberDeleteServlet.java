@@ -8,18 +8,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.kh.member.model.service.MemberService;
 
 /**
- * Servlet implementation class MemberEnrollFormServlet
+ * Servlet implementation class MemberDeleteServlet
  */
-@WebServlet("/enrollForm.me")
-public class MemberEnrollFormServlet extends HttpServlet {
+@WebServlet("/delete.me")
+public class MemberDeleteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public MemberEnrollFormServlet() {
+    public MemberDeleteServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -28,8 +31,19 @@ public class MemberEnrollFormServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher view = request.getRequestDispatcher("views/member/memberEnrollForm.jsp");
-		view.forward(request, response);
+		String userId = request.getParameter("userId");
+		int result = new MemberService().deleteMember(userId);
+		
+		if(result > 0 ) {
+			HttpSession session = request.getSession();
+			session.removeAttribute("loginUser");
+			session.setAttribute("msg", "회원탈퇴가 완료되었습니다. 복구관련사항은 관리자에게 문의하세요");
+			response.sendRedirect(request.getContextPath());
+		}else {
+			request.setAttribute("msg", "로그인에 실패했습니다.");
+			RequestDispatcher view = request.getRequestDispatcher("views/common/errorPage.jsp");
+			view.forward(request, response);
+		}
 	}
 
 	/**
