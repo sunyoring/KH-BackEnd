@@ -213,5 +213,140 @@
 	 		})
 	 	})
 	 </script>
+	 
+	 <h3>5. 서버로 기본형 데이터 전송 후 , 응답을 리스트 형태로 받기</h3>
+	 <h4>선택한 성별을 가진 모든 회원 정보를 가지고 오기</h4>
+	 
+	 회원번호입력 :
+	 남 <input type = "radio" name="chk_gender5" value="남" checked>
+	 여 <input type = "radio" name="chk_gender5" value="여" checked>
+
+	 <button id="btn5">조회</button>
+	 <textarea id ="textarea5" rows="5" cols="30"></textarea>
+	 
+	 <script type="text/javascript">
+	 	$(function(){
+	 		$("#btn5").click(function(){
+	 			var gen = $('input[name="chk_gender5"]:checked').val();
+	 			
+	 			console.log(gen);
+	 			$.ajax({
+	 				url : "JqTest5.do",
+	 				data : {
+	 					gender : gen
+	 				},
+	 				type:"get",
+	 				success : function(list){
+	 					
+	 					console.log(list);
+	 					var result = "";
+	 					$.each(list,function(i){
+	 						result += list[i].no + " / "
+	 								+ list[i].name + " / "
+	 								+ list[i].age + " / "
+	 								+ list[i].gender + " \n "
+	 					})
+	 					$("#textArea5").val(result)
+	 				},
+	 				error : function(e){
+	 					$("#textArea5").val("ajax통신실패")
+	 				}
+	 			})
+	 		})
+	 	})
+	 	
+	 </script>
+	 
+	 	<h3>6.서버로 데이터 전송후 , 응답을 맵(map)형태로 받아서 테이블에 출력하기</h3>
+	<h4>조회하고자 하는 회원의 이름 키워드를 입력해서 조회되는 회원들 정보와 전달된 키워드를 받아오기 </h4>
+	
+	
+	이름<input type="text" id = "input6" width=300>
+	<button id = "btn6">검색</button>
+	<table id = "memberTable6" border ="1" style="text-align:center">
+		<thead>
+			<th>번호</th>
+			<th>이름</th>
+			<th>나이</th>
+			<th>성별</th>
+		</thead>
+		<tbody>
+		
+		</tbody>
+	
+	
+	</table>
+	<script>
+		$(function(){
+			$("#btn6").click(function(){
+				var input = $("#input6").val();
+				
+				$.ajax({
+					url : "JqTest6.do",
+					data:{keyword:input},
+					type:"get",
+					success : function(map){
+						console.log(map);
+						console.log(map["jArr"]);
+						
+						var $tableBody = $("#memberTable6 tbody");
+						
+						$tableBody.html("");
+						$.each(map["jArr"], function(index, value){
+							console.log("value : " + value);
+							
+							var $tr = $("<tr>");
+							var $noTd = $("<td>").text(value.no); //<td> 1 </td>
+							var $nameTd = $("<td>").text(value.name); //<td> 1 </td>
+							var $ageTd = $("<td>").text(value.age); //<td> 1 </td>
+							var $genderTd = $("<td>").text(value.gender); //<td> 1 </td>
+							
+							$tr.append($noTd);
+							$tr.append($nameTd);
+							$tr.append($ageTd);
+							$tr.append($genderTd);
+							
+							$tableBody.append($tr);
+							
+						})
+					},
+					error : function(e){
+	 					$("#textArea6").val("ajax통신실패")
+	 				}
+				})
+			})
+		})
+	</script>
+	
+	<h3>7. Gson을 이용한 List 반환</h3>
+	<button id = "gbtn" rows="10" cols="30"></button>
+	<textarea id = "textArea7" rows="10" cols="30"></textarea>
+	
+	<script>
+	$(function(){
+		$("#gbtn").click(function(){
+			 $.ajax({
+				 url:"JqTest7.do",
+				 type:"get",
+				 success : function(list){
+	 					console.log(list);
+	 					var result = "";
+	 					$.each(list,function(i){
+	 						result += list[i].no + " / "
+	 								+ list[i].name + " / "
+	 								+ list[i].age + " / "
+	 								+ list[i].gender + " \n "
+	 					})
+	 					$("#textArea7").val(result);
+	 				},
+					error : function(e){
+	 					$("#textArea7").val("ajax통신실패")
+	 				}
+			 })
+		})
+	})</script>
+	
+	
+	
 </body>
 </html>
